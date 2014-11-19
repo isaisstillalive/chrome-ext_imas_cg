@@ -36,24 +36,24 @@
             '*://125.6.169.35/idolmaster/image_sp/card/*',
         ];
         parentMenuItem = createMenuItem({
-            title: 'アイドル',
+            title: 'アイドル(&I)',
             parentId: null,
         });
 
         //// 画像
         var imageMenuItem = createMenuItem({
-            title: '画像を開く',
+            title: '画像を開く(&I)',
         });
         createShowIdolImageSubMenus(imageMenuItem, 'hash');
 
         //// コピー
         ////// 名前
         var copyMenuItem = createMenuItem({
-            title: 'コピー',
+            title: 'コピー(&C)',
         });
-        createCopyMenuItem('名前', 'name');
-        createCopyMenuItem('id', 'id');
-        createCopyMenuItem('ハッシュ', 'hash');
+        createCopyMenuItem('名前(&N)', 'name');
+        createCopyMenuItem('&ID', 'id');
+        createCopyMenuItem('ハッシュ(&H)', 'hash');
 
         function createCopyMenuItem(title, key)
         {
@@ -68,34 +68,34 @@
 
         //// トレード
         var tradeMenu = createMenuItem({
-            title: 'トレード',
+            title: 'トレード(&T)',
         });
         createOpenImagePageMenuItem({
-            title: '出品状況',
+            title: '出品状況(&E)',
             parentId: tradeMenu,
             url: 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fauction%2Fsearch_top%2F0%2F<id>',
         });
         createOpenImagePageMenuItem({
-            title: '成立履歴',
+            title: '成立履歴(&H)',
             parentId: tradeMenu,
             url: 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fauction%2Fhistory%2F<id>',
         });
 
         //// ホシイモノに登録
         createOpenImagePageMenuItem({
-            title: 'ホシイモノ登録',
+            title: 'ホシイモノ登録(&W)',
             url: 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fwish%2Fregist%2F<hash>%2F0',
         });
 
         //// ギャラリー
         createOpenImagePageMenuItem({
-            title: 'ギャラリー',
+            title: 'ギャラリー(&G)',
             url: 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Farchive%2Fview%2F<id>',
         });
 
         //// 外部サービス
         var otherMenu = createMenuItem({
-            title: '外部サービス',
+            title: '外部サービス(&E)',
         });
 
         //// アイドルマスターシンデレラガールズDB
@@ -116,7 +116,7 @@
         //// 特訓前後
         createSeparatorMenuItem({});
         createMenuItem({
-            title: '特訓前',
+            title: '特訓前(&P)',
             onclick: function(info, tab){
                 var hash_type = 'prev_hash';
 
@@ -128,7 +128,7 @@
             },
         });
         createMenuItem({
-            title: '特訓後',
+            title: '特訓後(&N)',
             onclick: function(info, tab){
                 var hash_type = 'next_hash';
 
