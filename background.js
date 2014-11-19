@@ -46,14 +46,25 @@
         });
         createShowIdolImageSubMenus(imageMenuItem, 'hash');
 
-        //// 名前をコピー
-        createMenuItem({
-            title: '名前をコピー',
-            onclick: function(info, tab){
-                name = idolHashes[getHash(info.srcUrl)]['name'];
-                chipboard_copy(name);
-            },
+        //// コピー
+        ////// 名前
+        var copyMenuItem = createMenuItem({
+            title: 'コピー',
         });
+        createCopyMenuItem('名前', 'name');
+        createCopyMenuItem('id', 'id');
+        createCopyMenuItem('ハッシュ', 'hash');
+
+        function createCopyMenuItem(title, key)
+        {
+            createMenuItem({
+                title: title,
+                parentId: copyMenuItem,
+                onclick: function(info, tab){
+                    chipboard_copy(idolHashes[getHash(info.srcUrl)][key]);
+                },
+            });
+        }
 
         //// トレード
         var tradeMenu = createMenuItem({
