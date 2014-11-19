@@ -5,18 +5,23 @@
         '*://125.6.169.35/idolmaster/*',
     ];
 
-    var idolHashes = {};
-    function resetHash(){
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function(){
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                idolHashes = JSON.parse(xmlhttp.responseText);
-            }
-        };
-        xmlhttp.open("GET", 'https://raw.githubusercontent.com/isaisstillalive/imas_cg_hash/master/hash2id.json', true);
-        xmlhttp.send();
+    var idolHashes;
+    loadIdolHash(false);
+
+    function loadIdolHash(force){
+        if (force || localStorage['idolHashes'] === undefined) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function(){
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    localStorage['idolHashes'] = xmlhttp.responseText;
+                }
+            };
+            xmlhttp.open("GET", 'https://raw.githubusercontent.com/isaisstillalive/imas_cg_hash/master/hash2id.json', true);
+            xmlhttp.send();
+        }
+
+        idolHashes = JSON.parse(localStorage['idolHashes']);
     }
-    resetHash();
 
     var parentMenuItem;
     var contexts;
@@ -145,6 +150,17 @@
             },
         });
         // createSeparatorMenuItem({});
+    }
+
+    {
+        parentMenuItem = null;
+        contexts = ['page'];
+        createMenuItem({
+            title: 'ハッシュリスト再読み込み',
+            onclick: function(info, tab){
+                loadIdolHash(true);
+            },
+        });
     }
 
     // クリップボードにコピーする
