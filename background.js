@@ -92,7 +92,26 @@
             title: 'ギャラリー',
             url: 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Farchive%2Fview%2F<id>'
         });
-        //
+
+        //// 外部サービス
+        var otherMenu = createMenuItem({
+            title: '外部サービス',
+        });
+
+        //// アイドルマスターシンデレラガールズDB
+        createOpenImagePageMenuItem({
+            title: 'imas.cg.db',
+            url: 'http://imas.cg.db.n-hokke.com/idols?utf8=%E2%9C%93&q=id%3A<id>',
+            parentId: otherMenu,
+        });
+
+        //// 相場
+        createOpenImagePageMenuItem({
+            title: '相場データ情報',
+            url: 'http://imascg.info/idol/detail/<id>',
+            parentId: otherMenu,
+        });
+
 
         //// 特訓前後
         createSeparatorMenuItem({});
