@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "ExtImasCG",
+  "version": "0.0.1",
+
+  "description": "シンデレラガールズを使いやすくする",
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "storage",
+    "clipboardWrite",
+    "https://raw.githubusercontent.com/isaisstillalive/imas_cg_hash/*"
+  ]
+}
