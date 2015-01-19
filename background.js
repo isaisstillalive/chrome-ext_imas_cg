@@ -118,27 +118,26 @@
         createMenuItem({
             title: '特訓前(&P)',
             onclick: function(info, tab){
-                var hash_type = 'prev_hash';
-
-                var hash = getHash(info.srcUrl);
-                hash = idolHashes[hash][hash_type];
-                if (hash == undefined) return;
-
-                showImage(hash, 'xs', 'jpg');
+                showFamilyImage(info.srcUrl, 'prev_hash');
             },
         });
         createMenuItem({
             title: '特訓後(&N)',
             onclick: function(info, tab){
-                var hash_type = 'next_hash';
-
-                var hash = getHash(info.srcUrl);
-                hash = idolHashes[hash][hash_type];
-                if (hash == undefined) return;
-
-                showImage(hash, 'xs', 'jpg');
+                showFamilyImage(info.srcUrl, 'next_hash');
             },
         });
+
+        function showFamilyImage(url, hash_type)
+        {
+            var hashAndType = getHashAndType(url);
+            var hash = hashAndType.hash;
+
+            hash = idolHashes[hash][hash_type];
+            if (hash == undefined) return;
+
+            showImage(hash, hashAndType.type);
+        }
 
         function createOpenImagePageMenuItem(options)
         {
@@ -224,18 +223,11 @@
 
     function createShowIdolImageSubMenus(parentMenu, hash_type)
     {
-        var imageTypes = {
-            'l':    {'type': 'l',           'format': 'jpg'},
-            'ls':   {'type': 'ls',          'format': 'jpg'},
-            'xs':   {'type': 'xs',          'format': 'jpg'},
-            'ln':   {'type': 'l_noframe',   'format': 'jpg'},
-            'quest':{'type': 'quest',       'format': 'png'},
-        };
         var imageMenuItems = [
-            ['すべてのサイズ',          ['l', 'ls', 'xs', 'ln', 'quest']],
+            ['すべてのサイズ',          ['l', 'ls', 'xs', 'l_noframe', 'quest']],
             'separator',
             ['大きいサイズ',            ['l']],
-            ['大きいサイズ（枠なし）',  ['ln']],
+            ['大きいサイズ（枠なし）',  ['l_noframe']],
             ['ユニットバナー',          ['ls']],
             ['アルバムアイコン',        ['xs']],
             ['お仕事用',                ['quest']],
@@ -257,8 +249,7 @@
                         if (hash == undefined) return;
 
                         for (var type in types) {
-                            var typeInfo = imageTypes[types[type]];
-                            showImage(hash, typeInfo.type, typeInfo.format);
+                            showImage(hash, types[type]);
                         }
                     },
                 });
@@ -269,9 +260,13 @@
 
 
     function getHash(uri){
+        var hashAndType = getHashAndType(uri)
+        return hashAndType.hash;
+    }
+    function getHashAndType(uri){
         uri = getOriginal(uri);
-        var matches = uri.match(/\/card\/[^\/]+\/([0-9a-f]{32})/);
-        return matches[1];
+        var matches = uri.match(/\/card\/([^\/]+)\/([0-9a-f]{32})/);
+        return {type: matches[1], hash: matches[2]};
     }
     function getOriginal(uri){
         if (uri.match(/sp\.pf-img-a\.mbga\.jp/)) {
@@ -281,7 +276,13 @@
         return uri;
     }
 
-    function showImage(hash, type, format){
+    function showImage(hash, type){
+        if (type == 'quest') {
+            format = 'png';
+        } else {
+            format = 'jpg';
+        }
+
         var imageUri = 'http://125.6.169.35/idolmaster/image_sp/card/'+type+'/'+hash+'.'+format;
         chrome.tabs.create({
             url: imageUri,
