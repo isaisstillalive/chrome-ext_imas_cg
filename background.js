@@ -31,8 +31,8 @@
     {
         contexts = ['image'];
         targetUrlPattern = [
-            '*://sp.pf-img-a.mbga.jp/12008305?url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fimage_sp%2Fcard%2F*',
-            '*://sp.pf-img-a.mbga.jp/12008305/?url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fimage_sp%2Fcard%2F*',
+            '*://sp.pf-img-a.mbga.jp/12008305?*url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fimage_sp%2Fcard%2F*',
+            '*://sp.pf-img-a.mbga.jp/12008305/?*url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fimage_sp%2Fcard%2F*',
             '*://125.6.169.35/idolmaster/image_sp/card/*',
         ];
         parentMenuItem = createMenuItem({
