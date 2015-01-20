@@ -40,7 +40,7 @@
         // 直接編成を変える
         $.each([0,1,2,3], function(index, new_pos){
             if (new_pos == pos) return true;
-            var set_position = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;">' + (new_pos+2) + '番手</div>');
+            var set_position = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
             idols_buttons.append(set_position);
 
             var count = Math.abs(pos - new_pos);
@@ -73,7 +73,7 @@
         });
 
         // リーダーにする
-        var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;">ﾘｰﾀﾞｰにする</div>');
+        var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;"><a href="#" onclick="return false;">ﾘｰﾀﾞｰにする</a></div>');
         idols_buttons.append(set_leader_button);
         set_leader_button.click(function(){
             if (is_disabled()) return;
