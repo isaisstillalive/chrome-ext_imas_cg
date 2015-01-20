@@ -1,16 +1,30 @@
 (function(){
-    var matches = location.href.match(/%3Ftype%3D(\d+)%26/);
-    var type = matches[1];
+    var matches = location.href.match(/%2F(\w+)%2F(\w+)%3F(did%3D(\d+)%26)?type%3D(\d+)%26(position%3D(\d+)%26)?l_frm%3D(\w+)%26/);
+    var base = matches[1];
+    var path = matches[2];
+    var did  = matches[4];
+    var type = matches[5];
+    var position = matches[7] || 1;
+    var lfrm = matches[8];
+
+    var leader_type = type;
+    var leader_remove_types = [type];
+    if (base == 'deck') {
+        leader_type = null;
+        leader_remove_types = [0,1]
+    }
+
+    var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
 
     var instanceIds = [];
-    $('div#headerAcdPanel > section:nth-child(4) > div.idolStatus').each(function(pos)
+    front_idol.each(function(pos)
     {
         var href = $(this).find('.nameArea a').attr('href');
         var matches = href.match(/card_list%2Fdesc%2F(\d+)%3F/);
         instanceIds[pos] = matches[1];
     });
 
-    $('div#headerAcdPanel > section:nth-child(4) > div.idolStatus').each(function(pos)
+    front_idol.each(function(pos)
     {
         var instanceId = instanceIds[pos];
 
@@ -58,10 +72,11 @@
         set_leader_button.click(function(){
             if (is_disabled()) return;
 
-            disable_all_buttons()
-            .then(remove_unit(instanceId, 0))
-            .then(remove_unit(instanceId, 1))
-            .then(set_leader(instanceId))
+            var promise = disable_all_buttons();
+            $.each(leader_remove_types, function(index, remove_type){
+                promise = promise.then(remove_unit(instanceId, remove_type))
+            })
+            promise.then(set_leader(instanceId, leader_type))
             .done(function(){
                 location.reload();
             });
@@ -89,19 +104,22 @@
     function lift_position(id, type)
     {
         return function(){
-            return $.get(convertUri('deck/act_priority_up_dec?no=1&s=' + id + '&type=' + type + '&l_frm=Deck_1'));
+            return $.get(convertUri(base + '/act_priority_up_dec?no=1&s=' + id + '&type=' + type + '&position=' + position + '&l_frm=' + lfrm));
         };
     }
     function remove_unit(id, type)
     {
         return function(){
-            return $.get(convertUri('deck/deck_remove_card_check?no=1&rs=' + id + '&type=' + type + '&l_frm=Deck_1'));
+            return $.get(convertUri(base + '/deck_remove_card_check?no=1&rs=' + id + '&type=' + type + '&position=' + position + '&l_frm=' + lfrm));
         };
     }
-    function set_leader(id)
+    function set_leader(id, type)
     {
         return function(){
-            return $.get(convertUri('card_list/set_leader/' + id + '?l_frm=Card_list_1'));
+            return $.post(convertUri(base + '/deck_set_leader_card?no=1&l_frm=' + lfrm), {
+                sleeve: id,
+                type: type,
+            });
         };
     }
 })();
