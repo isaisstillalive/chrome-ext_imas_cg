@@ -15,18 +15,17 @@
         $(this).append(idols_buttons);
 
         // リーダーにする
-        var set_leader = $('<div class="grayButton80" style="width:98px; margin:0;">ﾘｰﾀﾞｰにする</div>');
-        idols_buttons.append(set_leader);
-        set_leader.click(function(){
+        var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;">ﾘｰﾀﾞｰにする</div>');
+        idols_buttons.append(set_leader_button);
+        set_leader_button.click(function(){
             if (is_disabled()) return;
-            disable_all_buttons();
 
-            $.get(convertUri('deck/deck_remove_card_check?no=1&rs=' + instanceId + '&type=0&l_frm=Deck_1'), function(){
-                $.get(convertUri('deck/deck_remove_card_check?no=1&rs=' + instanceId + '&type=1&l_frm=Deck_1'), function (){
-                    $.get(convertUri('card_list/set_leader/' + instanceId + '?l_frm=Card_list_1'), function (){
-                        location.reload();
-                    });
-                });
+            disable_all_buttons()
+            .then(remove_unit(instanceId, 0))
+            .then(remove_unit(instanceId, 1))
+            .then(set_leader(instanceId))
+            .done(function(){
+                location.reload();
             });
         });
     });
@@ -42,7 +41,23 @@
     }
     function disable_all_buttons()
     {
+        var d = $.Deferred();
         $('[class*=grayButton],submit').attr('disabled', 'disabled');
         $('[class*=grayButton],submit').text('送信中');
+        d.resolve();
+        return d.promise();
+    }
+
+    function remove_unit(id, type)
+    {
+        return function(){
+            return $.get(convertUri('deck/deck_remove_card_check?no=1&rs=' + id + '&type=' + type + '&l_frm=Deck_1'));
+        };
+    }
+    function set_leader(id)
+    {
+        return function(){
+            return $.get(convertUri('card_list/set_leader/' + id + '?l_frm=Card_list_1'));
+        };
     }
 })();
