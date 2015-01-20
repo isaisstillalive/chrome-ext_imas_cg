@@ -1,14 +1,18 @@
 (function(){
-    var matches = location.href.match(/%2F(\w+)%2F(\w+)%3F(did%3D(\d+)%26)?type%3D(\d+)%26(position%3D(\d+)%26)?l_frm%3D(\w+)%26/);
+    var matches = location.href.match(/url=.*%2F(\w+)%2F(\w+)%3F(.*)/);
     var base = matches[1];
     var path = matches[2];
-    var did  = matches[4];
-    var type = matches[5];
-    var position = matches[7] || 1;
-    var lfrm = matches[8];
+    var global_params = {};
 
-    var leader_type = type;
-    var leader_remove_types = [type];
+    $.each(decodeURIComponent(matches[3]).split('&'), function(index, pair_string){
+        var pair = pair_string.split('=');
+        var key = decodeURIComponent(pair[0]);
+        var value = decodeURIComponent(pair[1]);
+        global_params[key] = value;
+    });
+
+    var leader_type = global_params['type'];
+    var leader_remove_types = [global_params['type']];
     if (base == 'deck') {
         leader_type = null;
         leader_remove_types = [0,1]
@@ -16,6 +20,7 @@
 
     var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
 
+    // ユニットメンバーのインスタンスIDを求める
     var instanceIds = [];
     front_idol.each(function(pos)
     {
@@ -24,6 +29,7 @@
         instanceIds[pos] = matches[1];
     });
 
+    // ユニットメンバーごとに機能を追加する
     front_idol.each(function(pos)
     {
         var instanceId = instanceIds[pos];
@@ -57,7 +63,7 @@
                 var promise = disable_all_buttons();
 
                 $.each(lift, function(index, id){
-                    promise = promise.then(lift_position(id, type));
+                    promise = promise.then(lift_position(id, global_params['type']));
                 })
 
                 promise.done(function(){
@@ -83,9 +89,16 @@
         });
     });
 
-    function convertUri(uri)
+    function convertUri(uri, params)
     {
-        return 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F' + encodeURIComponent(uri) + '%26rnd%3D' + Math.floor(Math.random()*1000000000);
+        if (global_params['position']) {
+            params['position'] = global_params['position'];
+        }
+        params['l_frm'] = global_params['l_frm'];
+        params['rnd'] = Math.floor(Math.random()*1000000000);
+
+        var params_string = $.param(params);
+        return 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F' + encodeURIComponent(base + '/' + uri + '?' + params_string);
     }
 
     function is_disabled()
@@ -104,19 +117,32 @@
     function lift_position(id, type)
     {
         return function(){
-            return $.get(convertUri(base + '/act_priority_up_dec?no=1&s=' + id + '&type=' + type + '&position=' + position + '&l_frm=' + lfrm));
+            var params = {
+                no: 1,
+                s: id,
+                position: 1,
+                type: type,
+            };
+            return $.get(convertUri('act_priority_up_dec', params));
         };
     }
     function remove_unit(id, type)
     {
         return function(){
-            return $.get(convertUri(base + '/deck_remove_card_check?no=1&rs=' + id + '&type=' + type + '&position=' + position + '&l_frm=' + lfrm));
+            return $.get(convertUri('deck_remove_card_check', {
+                no: 1,
+                rs: id,
+                position: 1,
+                type: type,
+            }));
         };
     }
     function set_leader(id, type)
     {
         return function(){
-            return $.post(convertUri(base + '/deck_set_leader_card?no=1&l_frm=' + lfrm), {
+            return $.post(convertUri('deck_set_leader_card', {
+                no: 1,
+            }), {
                 sleeve: id,
                 type: type,
             });
