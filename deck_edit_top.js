@@ -1,4 +1,7 @@
 (function(){
+    var matches = location.href.match(/%3Ftype%3D(\d+)%26/);
+    var type = matches[1];
+
     var instanceIds = [];
     $('div#headerAcdPanel > section:nth-child(4) > div.idolStatus').each(function(pos)
     {
@@ -40,7 +43,7 @@
                 var promise = disable_all_buttons();
 
                 $.each(lift, function(index, id){
-                    promise = promise.then(lift_position(id, 0));
+                    promise = promise.then(lift_position(id, type));
                 })
 
                 promise.done(function(){
