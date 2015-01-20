@@ -117,13 +117,12 @@
     function lift_position(id, type)
     {
         return function(){
-            var params = {
+            return $.get(convertUri('act_priority_up_dec', {
                 no: 1,
                 s: id,
                 position: 1,
                 type: type,
-            };
-            return $.get(convertUri('act_priority_up_dec', params));
+            }));
         };
     }
     function remove_unit(id, type)
