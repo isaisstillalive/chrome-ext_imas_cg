@@ -47,7 +47,6 @@ front_idol.each(function(pos)
             $.each(lift, function(index, id){
                 promise = promise.then(lift_position(id, page_params['type']));
             })
-
             promise.done(function(){
                 location.reload();
             });
@@ -58,15 +57,20 @@ front_idol.each(function(pos)
     var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;"><a href="#" onclick="return false;">ﾘｰﾀﾞｰにする</a></div>');
     idols_buttons.append(set_leader_button);
 
-    var leader_type = page_params['type'];
-    var leader_remove_types = [page_params['type']];
+    var leader_type;
+    var leader_remove_types;
+    // 通常の編成画面の場合、リーダーに設定するには0,1（攻守フロント）両方から外す必要がある
     if (page_base === 'deck') {
         leader_type = null;
         leader_remove_types = [0,1]
+    } else {
+        leader_type = page_params['type'];
+        leader_remove_types = [page_params['type']];
     }
     set_leader_button.click(function(){
         if (is_disabled($(this))) return;
         var promise = disable_all_buttons();
+
         $.each(leader_remove_types, function(index, remove_type){
             promise = promise.then(remove_unit(instanceId, remove_type))
         })
