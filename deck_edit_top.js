@@ -11,13 +11,6 @@
         global_params[key] = value;
     });
 
-    var leader_type = global_params['type'];
-    var leader_remove_types = [global_params['type']];
-    if (base === 'deck') {
-        leader_type = null;
-        leader_remove_types = [0,1]
-    }
-
     var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
 
     // ユニットメンバーのインスタンスIDを求める
@@ -39,7 +32,9 @@
 
         // 直接編成を変える
         $.each([0,1,2,3], function(index, new_pos){
+            // 同じ場所ならスキップ
             if (new_pos === pos) return true;
+
             var set_position = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
             idols_buttons.append(set_position);
 
@@ -75,6 +70,13 @@
         // リーダーにする
         var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;"><a href="#" onclick="return false;">ﾘｰﾀﾞｰにする</a></div>');
         idols_buttons.append(set_leader_button);
+
+        var leader_type = global_params['type'];
+        var leader_remove_types = [global_params['type']];
+        if (base === 'deck') {
+            leader_type = null;
+            leader_remove_types = [0,1]
+        }
         set_leader_button.click(function(){
             if (is_disabled()) return;
 
