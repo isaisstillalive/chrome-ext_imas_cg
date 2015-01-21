@@ -28,7 +28,7 @@ function disable_all_buttons()
 {
     var d = $.Deferred();
     $('[class*=grayButton],submit').attr('disabled', 'disabled');
-    $('[class*=grayButton],submit').text('送信中');
+    $('[class*=grayButton]>a,submit').text('送信中');
     d.resolve();
     return d.promise();
 }
