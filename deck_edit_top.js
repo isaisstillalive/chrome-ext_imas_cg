@@ -18,7 +18,7 @@ front_idol.each(function(pos)
     $(this).append(idols_buttons);
 
     // 直接編成を変える
-    $.each([0,1,2,3], function(index, new_pos){
+    front_idol.each(function(new_pos){
         // 同じ場所ならスキップ
         if (new_pos === pos) return true;
 
