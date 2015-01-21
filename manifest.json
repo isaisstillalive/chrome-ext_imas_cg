@@ -10,7 +10,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F*"],
+      "matches": ["*://*.mbga.jp/12008305/?*url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F*"],
       "include_globs": [
         "*deck%2Fdeck_edit_top%3F*",
         "*event_fes%2Fevent_deck_edit%3F*"
