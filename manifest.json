@@ -15,7 +15,7 @@
         "*deck%2Fdeck_edit_top%3F*",
         "*event_fes%2Fevent_deck_edit%3F*"
       ],
-      "js": ["jquery-2.1.3.min.js","deck_edit_top.js"],
+      "js": ["jquery-2.1.3.min.js","imas_cg.js","deck_edit_top.js"],
       "run_at": "document_end"
     }
   ],

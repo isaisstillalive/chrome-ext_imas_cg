@@ -1,15 +1,3 @@
-var matches = location.href.match(/url=.*%2F(\w+)%2F(\w+)%3F(.*)/);
-var base = matches[1];
-var path = matches[2];
-var global_params = {};
-
-$.each(decodeURIComponent(matches[3]).split('&'), function(index, pair_string){
-    var pair = pair_string.split('=');
-    var key = decodeURIComponent(pair[0]);
-    var value = decodeURIComponent(pair[1]);
-    global_params[key] = value;
-});
-
 var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
 
 // ユニットメンバーのインスタンスIDを求める
@@ -57,7 +45,7 @@ front_idol.each(function(pos)
             var promise = disable_all_buttons();
 
             $.each(lift, function(index, id){
-                promise = promise.then(lift_position(id, global_params['type']));
+                promise = promise.then(lift_position(id, page_params['type']));
             })
 
             promise.done(function(){
@@ -70,9 +58,9 @@ front_idol.each(function(pos)
     var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;"><a href="#" onclick="return false;">ﾘｰﾀﾞｰにする</a></div>');
     idols_buttons.append(set_leader_button);
 
-    var leader_type = global_params['type'];
-    var leader_remove_types = [global_params['type']];
-    if (base === 'deck') {
+    var leader_type = page_params['type'];
+    var leader_remove_types = [page_params['type']];
+    if (page_base === 'deck') {
         leader_type = null;
         leader_remove_types = [0,1]
     }
@@ -89,31 +77,6 @@ front_idol.each(function(pos)
         });
     });
 });
-
-function convertUri(uri, params)
-{
-    if (global_params['position']) {
-        params['position'] = global_params['position'];
-    }
-    params['l_frm'] = global_params['l_frm'];
-    params['rnd'] = Math.floor(Math.random()*1000000000);
-
-    var params_string = $.param(params);
-    return 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F' + encodeURIComponent(base + '/' + uri + '?' + params_string);
-}
-
-function is_disabled()
-{
-    return ($(this).attr('disabled') === 'disabled');
-}
-function disable_all_buttons()
-{
-    var d = $.Deferred();
-    $('[class*=grayButton],submit').attr('disabled', 'disabled');
-    $('[class*=grayButton],submit').text('送信中');
-    d.resolve();
-    return d.promise();
-}
 
 function lift_position(id, type)
 {
