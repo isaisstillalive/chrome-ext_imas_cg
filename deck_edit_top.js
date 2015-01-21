@@ -13,7 +13,7 @@
 
     var leader_type = global_params['type'];
     var leader_remove_types = [global_params['type']];
-    if (base == 'deck') {
+    if (base === 'deck') {
         leader_type = null;
         leader_remove_types = [0,1]
     }
@@ -39,7 +39,7 @@
 
         // 直接編成を変える
         $.each([0,1,2,3], function(index, new_pos){
-            if (new_pos == pos) return true;
+            if (new_pos === pos) return true;
             var set_position = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
             idols_buttons.append(set_position);
 
@@ -103,7 +103,7 @@
 
     function is_disabled()
     {
-        return ($(this).attr('disabled') == 'disabled');
+        return ($(this).attr('disabled') === 'disabled');
     }
     function disable_all_buttons()
     {
