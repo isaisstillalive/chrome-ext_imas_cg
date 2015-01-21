@@ -27,10 +27,13 @@ function is_disabled(button)
 function disable_all_buttons()
 {
     var d = $.Deferred();
+
     $('[class*=grayButton],submit').attr('disabled', 'disabled');
-    $('[class*=grayButton]>a,submit').text('送信中');
-    $('[class*=grayButton]>a,submit').attr('href', '#');
-    $('[class*=grayButton]>a,submit').attr('onclick', 'return false;');
+    var button = $('[class*=grayButton]>a,submit');
+    button.text('送信中');
+    button.attr('href', '#');
+    button.attr('onclick', 'return false;');
+
     d.resolve();
     return d.promise();
 }
