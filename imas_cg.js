@@ -20,15 +20,17 @@ function convertUri(uri, params)
     return 'http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2F' + encodeURIComponent(page_base + '/' + uri + '?' + params_string);
 }
 
-function is_disabled()
+function is_disabled(button)
 {
-    return ($(this).attr('disabled') === 'disabled');
+    return ($(button).attr('disabled') === 'disabled');
 }
 function disable_all_buttons()
 {
     var d = $.Deferred();
     $('[class*=grayButton],submit').attr('disabled', 'disabled');
     $('[class*=grayButton]>a,submit').text('送信中');
+    $('[class*=grayButton]>a,submit').attr('href', '#');
+    $('[class*=grayButton]>a,submit').attr('onclick', 'return false;');
     d.resolve();
     return d.promise();
 }

@@ -41,7 +41,7 @@ front_idol.each(function(pos)
         }
 
         set_position.click(function(){
-            if (is_disabled()) return;
+            if (is_disabled($(this))) return;
             var promise = disable_all_buttons();
 
             $.each(lift, function(index, id){
@@ -65,8 +65,7 @@ front_idol.each(function(pos)
         leader_remove_types = [0,1]
     }
     set_leader_button.click(function(){
-        if (is_disabled()) return;
-
+        if (is_disabled($(this))) return;
         var promise = disable_all_buttons();
         $.each(leader_remove_types, function(index, remove_type){
             promise = promise.then(remove_unit(instanceId, remove_type))
