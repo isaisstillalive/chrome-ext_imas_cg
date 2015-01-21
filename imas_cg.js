@@ -13,9 +13,6 @@ $.each(decodeURIComponent(matches[3]).split('&'), function(index, pair_string){
 
 function convertUri(uri, params)
 {
-    if (page_params['position']) {
-        params['position'] = page_params['position'];
-    }
     params['l_frm'] = page_params['l_frm'];
     params['rnd'] = Math.floor(Math.random()*1000000000);
 

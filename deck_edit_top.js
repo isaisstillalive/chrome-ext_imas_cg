@@ -71,7 +71,7 @@ front_idol.each(function(pos)
         $.each(leader_remove_types, function(index, remove_type){
             promise = promise.then(remove_unit(instanceId, remove_type))
         })
-        promise.then(set_leader(instanceId, leader_type))
+        promise.then(set_leader(instanceId, leader_type, page_params['position']))
         .done(function(){
             location.reload();
         });
@@ -104,13 +104,16 @@ function remove_unit(id, type, position)
         }));
     };
 }
-function set_leader(id, type)
+function set_leader(id, type, position)
 {
+    if (position === undefined) position = 1;
+
     return function(){
         return $.post(convertUri('deck_set_leader_card', {
             no: 1,
         }), {
             sleeve: id,
+            position: position,
             type: type,
         });
     };
