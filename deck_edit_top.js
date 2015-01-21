@@ -78,24 +78,28 @@ front_idol.each(function(pos)
     });
 });
 
-function lift_position(id, type)
+function lift_position(id, type, position)
 {
+    if (position === undefined) position = 1;
+
     return function(){
         return $.get(convertUri('act_priority_up_dec', {
             no: 1,
             s: id,
-            position: 1,
+            position: position,
             type: type,
         }));
     };
 }
-function remove_unit(id, type)
+function remove_unit(id, type, position)
 {
+    if (position === undefined) position = 1;
+
     return function(){
         return $.get(convertUri('deck_remove_card_check', {
             no: 1,
             rs: id,
-            position: 1,
+            position: position,
             type: type,
         }));
     };
