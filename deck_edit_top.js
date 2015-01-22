@@ -47,9 +47,7 @@ front_idol.each(function(pos)
             $.each(lift, function(index, id){
                 promise = promise.then(lift_position(id, page_params['type']));
             })
-            promise.done(function(){
-                location.reload();
-            });
+            promise.done(reload());
         });
     });
 
@@ -75,9 +73,7 @@ front_idol.each(function(pos)
             promise = promise.then(remove_unit(instanceId, remove_type))
         })
         promise.then(set_leader(instanceId, leader_type, page_params['position']))
-        .done(function(){
-            location.reload();
-        });
+        .done(reload());
     });
 });
 
@@ -85,39 +81,33 @@ function lift_position(id, type, position)
 {
     if (position === undefined) position = 1;
 
-    return function(){
-        return $.get(convertUri('act_priority_up_dec', {
-            no: 1,
-            s: id,
-            position: position,
-            type: type,
-        }));
-    };
+    return imas_cg_get('act_priority_up_dec', {
+        no: 1,
+        s: id,
+        position: position,
+        type: type,
+    });
 }
 function remove_unit(id, type, position)
 {
     if (position === undefined) position = 1;
 
-    return function(){
-        return $.get(convertUri('deck_remove_card_check', {
-            no: 1,
-            rs: id,
-            position: position,
-            type: type,
-        }));
-    };
+    return imas_cg_get('deck_remove_card_check', {
+        no: 1,
+        rs: id,
+        position: position,
+        type: type,
+    });
 }
 function set_leader(id, type, position)
 {
     if (position === undefined) position = 1;
 
-    return function(){
-        return $.post(convertUri('deck_set_leader_card', {
-            no: 1,
-        }), {
-            sleeve: id,
-            position: position,
-            type: type,
-        });
-    };
+    return imas_cg_post('deck_set_leader_card', {
+        no: 1,
+    }, {
+        sleeve: id,
+        position: position,
+        type: type,
+    });
 }

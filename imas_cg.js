@@ -37,3 +37,23 @@ function disable_all_buttons()
     d.resolve();
     return d.promise();
 }
+
+
+function imas_cg_get(url, params)
+{
+    return function(){
+        return $.get(convertUri(url, params));
+    };
+}
+function imas_cg_post(url, params, data)
+{
+    return function(){
+        return $.post(convertUri(url, params), data);
+    };
+}
+function reload()
+{
+    return function(){
+        location.reload();
+    };
+}
