@@ -98,6 +98,13 @@
             title: '外部サービス(&E)',
         });
 
+        //// あおしらぼ アイドルマスターシンデレラガールズデータベース
+        createOpenImagePageMenuItem({
+            title: 'あおしらぼ',
+            url: 'http://aoshirobo.net/imas_cg/detail.php?id=<id>',
+            parentId: otherMenu,
+        });
+
         //// アイドルマスターシンデレラガールズDB
         createOpenImagePageMenuItem({
             title: 'imas.cg.db',
