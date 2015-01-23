@@ -17,21 +17,44 @@ front_idol.each(function(pos)
     var idols_buttons = $('<div style="max-width:298px; margin:2px 0 6px;" class="displayBox right_float" />');
     $(this).append(idols_buttons);
 
+    // リーダーにする
+    var set_leader_button = append_lift_button(idols_buttons, 'ﾘｰﾀﾞｰ', 0, true);
+    create_set_leader_button(set_leader_button, instanceId);
+
     // 直接編成を変える
     front_idol.each(function(new_pos){
-        // 同じ場所ならスキップ
-        if (new_pos === pos) return true;
+        var title = (new_pos+2) + '番手';
 
-        var set_position_button = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
-        idols_buttons.append(set_position_button);
+        // 同じ場所ならスキップ
+        if (new_pos === pos) {
+            append_lift_button(idols_buttons, title, (1+new_pos)%5, false);
+            return true;
+        }
+
+        var set_position_button = append_lift_button(idols_buttons, title, (1+new_pos)%5, true);
         create_set_position_button(set_position_button, pos, new_pos);
     });
-
-    // リーダーにする
-    var set_leader_button = $('<div class="grayButton80" style="width:98px; margin:0;"><a href="#" onclick="return false;">ﾘｰﾀﾞｰにする</a></div>');
-    idols_buttons.append(set_leader_button);
-    create_set_leader_button(set_leader_button, instanceId);
 });
+
+function append_lift_button(base, title, index, enabled)
+{
+    var width = 53;
+    var margin = '0 0 0 6px';
+    if (index == 0) {
+        margin = '0';
+    } else if (index == 2) {
+        width -= 1;
+    }
+
+    var set_leader_button;
+    if (enabled) {
+        set_leader_button = $('<div class="grayButton80" style="width:' + width + 'px; margin:' + margin + ';"><a href="#" onclick="return false;">' + title + '</a></div>');
+    } else {
+        set_leader_button = $('<div class="dark_gray a_link" style="width:' + width + 'px; margin:' + margin + '; padding: 0;">' + title + '</div>');
+    }
+    base.append(set_leader_button);
+    return set_leader_button;
+}
 
 function create_set_leader_button(button, instanceId)
 {
