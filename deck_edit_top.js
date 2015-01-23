@@ -1,4 +1,4 @@
-var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
+var front_idol = $('section:has(h3:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ)),section:has(li:contains(ﾌﾛﾝﾄﾒﾝﾊﾞｰ))').find('div.idolStatus');
 
 // ユニットメンバーのインスタンスIDを求める
 var instanceIds = [];
@@ -14,8 +14,8 @@ front_idol.each(function(pos)
 {
     var instanceId = instanceIds[pos];
 
-    var idols_buttons = $('<div style="max-width:298px; margin:2px 0 6px;" class="displayBox right_float" />');
-    $(this).append(idols_buttons);
+    var base = $(this);
+    var idols_buttons = append_button_section(base);
 
     // リーダーにする
     var set_leader_button = append_lift_button(idols_buttons, 'ﾘｰﾀﾞｰ', 0, true);
@@ -23,6 +23,10 @@ front_idol.each(function(pos)
 
     // 直接編成を変える
     front_idol.each(function(new_pos){
+        if (new_pos === 4) {
+            idols_buttons = append_button_section(base);
+        }
+
         var title = (new_pos+2) + '番手';
 
         // 同じ場所ならスキップ
@@ -35,6 +39,13 @@ front_idol.each(function(pos)
         create_set_position_button(set_position_button, pos, new_pos);
     });
 });
+
+function append_button_section(base)
+{
+    var idols_buttons = $('<div style="max-width:298px; margin:2px 0 6px;" class="displayBox right_float" />');
+    base.append(idols_buttons);
+    return idols_buttons;
+}
 
 function append_lift_button(base, title, index, enabled)
 {
@@ -65,8 +76,8 @@ function create_set_leader_button(button, instanceId)
         leader_type = null;
         leader_remove_types = [0,1]
     } else {
-        leader_type = page_params['type'];
-        leader_remove_types = [page_params['type']];
+        leader_type = (page_params['type'] || page_params['deck']);
+        leader_remove_types = [leader_type];
     }
     button.click(function(){
         if (is_disabled($(this))) return;
@@ -101,7 +112,7 @@ function create_set_position_button(button, pos, new_pos)
         var promise = disable_all_buttons();
 
         $.each(lift, function(index, id){
-            promise = promise.then(lift_position(id, page_params['type']));
+            promise = promise.then(lift_position(id, (page_params['type'] || page_params['deck']), page_params['position']));
         })
         promise.done(reload());
     });
@@ -116,6 +127,7 @@ function lift_position(id, type, position)
         s: id,
         position: position,
         type: type,
+        deck: type,
     });
 }
 function remove_unit(id, type, position)
@@ -127,6 +139,7 @@ function remove_unit(id, type, position)
         rs: id,
         position: position,
         type: type,
+        deck: type,
     });
 }
 function set_leader(id, type, position)
@@ -139,5 +152,6 @@ function set_leader(id, type, position)
         sleeve: id,
         position: position,
         type: type,
+        deck: type,
     });
 }
