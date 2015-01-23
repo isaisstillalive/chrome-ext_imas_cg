@@ -22,33 +22,9 @@ front_idol.each(function(pos)
         // 同じ場所ならスキップ
         if (new_pos === pos) return true;
 
-        var set_position = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
-        idols_buttons.append(set_position);
-
-        var count = Math.abs(pos - new_pos);
-        var lift = new Array(count);
-        if (new_pos < pos) {
-            // 上げる
-            for (var i = 0; i < count; i++) {
-                lift[i] = instanceId;
-            }
-        }
-         else {
-            // 下げるために、一つ下のアイドルを上げることを繰り返す
-            for (var i = 0; i < count; i++) {
-                lift[i] = instanceIds[pos + 1 + i];
-            }
-        }
-
-        set_position.click(function(){
-            if (is_disabled($(this))) return;
-            var promise = disable_all_buttons();
-
-            $.each(lift, function(index, id){
-                promise = promise.then(lift_position(id, page_params['type']));
-            })
-            promise.done(reload());
-        });
+        var set_position_button = $('<div class="grayButton80" style="width:58px; margin:0 6px 0 0;"><a href="#" onclick="return false;">' + (new_pos+2) + '番手</a></div>');
+        idols_buttons.append(set_position_button);
+        create_set_position_button(set_position_button, pos, new_pos);
     });
 
     // リーダーにする
@@ -78,6 +54,33 @@ function create_set_leader_button(button, instanceId)
         })
         promise.then(set_leader(instanceId, leader_type, page_params['position']))
         .done(reload());
+    });
+}
+function create_set_position_button(button, pos, new_pos)
+{
+    var count = Math.abs(pos - new_pos);
+    var lift = new Array(count);
+    if (new_pos < pos) {
+        // 上げる
+        for (var i = 0; i < count; i++) {
+            lift[i] = instanceIds[pos];
+        }
+    }
+     else {
+        // 下げるために、一つ下のアイドルを上げることを繰り返す
+        for (var i = 0; i < count; i++) {
+            lift[i] = instanceIds[pos + 1 + i];
+        }
+    }
+
+    button.click(function(){
+        if (is_disabled($(this))) return;
+        var promise = disable_all_buttons();
+
+        $.each(lift, function(index, id){
+            promise = promise.then(lift_position(id, page_params['type']));
+        })
+        promise.done(reload());
     });
 }
 
