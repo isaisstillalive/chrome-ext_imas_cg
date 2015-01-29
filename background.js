@@ -1,27 +1,62 @@
+function IdolHashList()
+{
+    this.load();
+}
+IdolHashList.key = 'idolHashList';
+IdolHashList.prototype = {
+    load: function (force)
+    {
+        var idolHashList = this;
+        idolHashList.loaded = false;
+
+        chrome.storage.local.get(IdolHashList.key, function(data) {
+            idolHashList.list = data[IdolHashList.key];
+            if (idolHashList.list == undefined) {
+                idolHashList.reload();
+            } else {
+                idolHashList.loaded = true;
+            }
+        });
+    },
+
+    save: function(data)
+    {
+        var storageData = {};
+        this.list = data;
+        storageData[IdolHashList.key] = this.list;
+        chrome.storage.local.set(storageData, function(data) {});
+    },
+
+    reload: function()
+    {
+        var idolHashList = this;
+        idolHashList.loaded = false;
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function(){
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                idolHashList.save(JSON.parse(xmlhttp.responseText));
+                idolHashList.loaded = true;
+            }
+        };
+        xmlhttp.open("GET", 'https://raw.githubusercontent.com/isaisstillalive/imas_cg_hash/master/hash2id.json', true);
+        xmlhttp.send();
+    },
+
+    get: function(hash)
+    {
+        return this.list[hash];
+    }
+}
+
+var idolHashList = new IdolHashList();
+
 (function(){
     var documentUrlPatterns = [
         '*://*.mbga.jp/12008305/*',
         '*://*.mbga.jp/12008305?*',
         '*://125.6.169.35/idolmaster/*',
     ];
-
-    var idolHashes;
-    loadIdolHash(false);
-
-    function loadIdolHash(force){
-        if (force || localStorage['idolHashes'] === undefined) {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function(){
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    localStorage['idolHashes'] = xmlhttp.responseText;
-                }
-            };
-            xmlhttp.open("GET", 'https://raw.githubusercontent.com/isaisstillalive/imas_cg_hash/master/hash2id.json', true);
-            xmlhttp.send();
-        }
-
-        idolHashes = JSON.parse(localStorage['idolHashes']);
-    }
 
     var parentMenuItem;
     var contexts;
@@ -61,7 +96,7 @@
                 title: title,
                 parentId: copyMenuItem,
                 onclick: function(info, tab){
-                    chipboard_copy(idolHashes[getHash(info.srcUrl)][key]);
+                    chipboard_copy(idolHashList.get(getHash(info.srcUrl))[key]);
                 },
             });
         }
@@ -140,7 +175,7 @@
             var hashAndType = getHashAndType(url);
             var hash = hashAndType.hash;
 
-            hash = idolHashes[hash][hash_type];
+            hash = idolHashList.get(hash)[hash_type];
             if (hash == undefined) return;
 
             showImage(hash, hashAndType.type);
@@ -152,7 +187,7 @@
             delete options.url;
 
             options.onclick = function(info, tab){
-                var idol = idolHashes[getHash(info.srcUrl)];
+                var idol = idolHashList.get(getHash(info.srcUrl));
                 var tradeUrl = url;
                 tradeUrl = tradeUrl.replace('<id>', idol['id']);
                 tradeUrl = tradeUrl.replace('<hash>', idol['hash']);
@@ -194,7 +229,7 @@
         createMenuItem({
             title: 'ハッシュリスト再読み込み',
             onclick: function(info, tab){
-                loadIdolHash(true);
+                idolHashList.reload(true);
             },
         });
     }
@@ -252,7 +287,7 @@
                     title: title,
                     onclick: function(info, tab){
                         var hash = getHash(info.srcUrl);
-                        hash = idolHashes[hash][hash_type];
+                        hash = idolHashList.get(hash)[hash_type];
                         if (hash == undefined) return;
 
                         for (var type in types) {
