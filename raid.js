@@ -15,6 +15,11 @@
                 battleButton.submit();
                 return false;
 
+            // rキーでリロード
+            case 82:
+                location.reload();
+                return false;
+
         }
     });
 })();
